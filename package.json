@@ -1,0 +1,15 @@
+{
+  "name": "sdkjs-doc",
+  "version": "1.0.0",
+  "description": "It is a json generator of documentation",
+  "main": "example.js",
+  "dependencies": {
+    "jsdoc": "^3.5.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dmitriy Rotatyy [kvazilife@gmail.com",
+  "license": "ISC"
+}
