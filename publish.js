@@ -58,7 +58,6 @@ function get_params(data) {
         if (x.type) {
             params.push({"type": type, "name": x.name, "description": x.description});
         }
-        console.log(x)
     });
     return params;
 }
