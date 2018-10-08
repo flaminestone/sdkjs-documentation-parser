@@ -52,8 +52,13 @@ function add_method(doclet, main_data) {
 
 function get_params(data) {
     let params = [];
+    var type = '';
     data.forEach(x => {
-        params.push({"type": x.type.names[0], "name": x.name, "description": x.description});
+        if (x.type) { type = x.type.names[0]}
+        if (x.type) {
+            params.push({"type": type, "name": x.name, "description": x.description});
+        }
+        console.log(x)
     });
     return params;
 }
