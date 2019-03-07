@@ -36,7 +36,7 @@ function create_class_if_not_exist(doclet, main_data) {
 
 function add_method(doclet, main_data) {
     let method = {};
-    if (doclet.memberof) {
+    if (doclet.memberof && !doclet.name.includes("private")) {
         method.memberof = doclet.memberof;
         method.name = doclet.name;
         method.description = doclet.description;
