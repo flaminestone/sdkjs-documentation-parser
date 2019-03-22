@@ -5,12 +5,14 @@ exports.publish = function(taffyData) {
     data = taffyData;
     let main_data = {};
     data().each(function(doclet) {
-        if (doclet.kind === "class") {
-            main_data = create_class_if_not_exist(doclet, main_data);
-        }
-        if (doclet.kind === "function") {
-            main_data = create_class_if_not_exist(doclet, main_data);
-            main_data = add_method(doclet, main_data);
+        if (!doclet.undocumented) {
+            if (doclet.kind === "class") {
+                main_data = create_class_if_not_exist(doclet, main_data);
+            }
+            if (doclet.kind === "function") {
+                main_data = create_class_if_not_exist(doclet, main_data);
+                main_data = add_method(doclet, main_data);
+            }
         }
         doclet.attribs = '';
     });
@@ -22,13 +24,21 @@ function create_class_if_not_exist(doclet, main_data) {
     if (!name) {
         name = doclet.longname;
     }
-    if (!name.includes("private")) {
-    if (!(main_data[name])) {
-        main_data[name] = { "methods": {},
-            "comment": doclet.comment,
-            "description": doclet.description,
-            "scope": doclet.scope };
+    if (name.includes("private")) return main_data;
+
+    let type = {
+        "methods": {},
+        "comment": doclet.comment,
+        "description": doclet.description,
+        "scope": doclet.scope
+    };
+
+    if (doclet.params) {
+        type.params = get_params(doclet.params);
     }
+
+    if (!(main_data[name])) {
+        main_data[name] = type;
     }
 
     return main_data;
