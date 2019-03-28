@@ -7,11 +7,12 @@ exports.publish = function(taffyData) {
     data().each(function(doclet) {
         if (!doclet.undocumented) {
             if (doclet.kind === "class") {
-                main_data = create_class_if_not_exist(doclet, main_data);
-            }
-            if (doclet.kind === "function") {
-                main_data = create_class_if_not_exist(doclet, main_data);
-                main_data = add_method(doclet, main_data);
+                create_class_if_not_exist(doclet, main_data);
+            } else if (doclet.kind === "function") {
+                create_class_if_not_exist(doclet, main_data);
+                add_method(doclet, main_data);
+            } else if (doclet.kind === "typedef") {
+                add_typedef(doclet, main_data);
             }
         }
         doclet.attribs = '';
@@ -24,7 +25,7 @@ function create_class_if_not_exist(doclet, main_data) {
     if (!name) {
         name = doclet.longname;
     }
-    if (name.includes("private")) return main_data;
+    if (name.includes("private")) return;
 
     let type = {
         "methods": {},
@@ -40,24 +41,33 @@ function create_class_if_not_exist(doclet, main_data) {
     if (!(main_data[name])) {
         main_data[name] = type;
     }
-
-    return main_data;
 }
 
 function add_method(doclet, main_data) {
     let method = {};
-    if (doclet.memberof && !doclet.name.includes("private")) {
-        method.memberof = doclet.memberof;
-        method.name = doclet.name;
-        method.description = doclet.description;
-        method.tags = get_tags(doclet.tags);
-        method.returns = get_returns(doclet.returns);
-        if (doclet.params) {
-            method.params = get_params(doclet.params);
-        }
-        main_data[doclet.memberof].methods[method.name] = method;
+    if (!doclet.memberof || doclet.name.includes("private")) return;
+
+    method.memberof = doclet.memberof;
+    method.name = doclet.name;
+    method.description = doclet.description;
+    method.tags = get_tags(doclet.tags);
+    method.returns = get_returns(doclet.returns);
+    if (doclet.params) {
+        method.params = get_params(doclet.params);
     }
-    return main_data;
+    main_data[doclet.memberof].methods[method.name] = method;
+}
+
+function add_typedef(doclet, main_data) {
+    if (doclet.name.includes("private")) return;
+
+    if (!main_data.Globals) main_data.Globals = {};
+
+    main_data.Globals[doclet.name] = {
+        name: doclet.name,
+        description: doclet.description,
+        type: doclet.type.names
+    };
 }
 
 function get_params(data) {
