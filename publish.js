@@ -52,6 +52,9 @@ function add_method(doclet, main_data) {
     method.description = doclet.description;
     method.tags = get_tags(doclet.tags);
     method.returns = get_returns(doclet.returns);
+    method.see = doclet.see ? doclet.see[0] : null;
+    method.inherits = doclet.inherits ? "Inherited From: {@link " + doclet.inherits + "}" : null;
+
     if (doclet.params) {
         method.params = get_params(doclet.params);
     }
