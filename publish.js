@@ -90,11 +90,17 @@ function json_generate(data) {
 
 function get_tags(data) {
     let tags = {};
-    if (data) {
 
-    data.forEach(tag => {
-        tags[tag.originalTitle] = tag.text;
-    });
+    if (data) {
+        data.forEach(tag => {
+            if (!tag.text) return;
+
+            if (tag.text[0] === "[" || tag.text[0] === "{") {
+                tags[tag.originalTitle] = JSON.parse(tag.text);
+            } else {
+                tags[tag.originalTitle] = tag.text;
+            }
+        });
     }
     return tags;
 }
