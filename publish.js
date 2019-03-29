@@ -76,7 +76,13 @@ function get_params(data) {
     data.forEach(x => {
         if (x.type) { type = x.type.names[0]}
         if (x.type) {
-            params.push({"type": type, "name": x.name, "description": x.description});
+            params.push({
+                "type": type,
+                "name": x.name,
+                "description": x.description,
+                "optional": !!x.optional,
+                "defaultValue": x.defaultvalue
+            });
         }
     });
     return params;
