@@ -11,7 +11,7 @@ copy ..\cell\apiBuilder.js tmp\cell.js
 copy ..\slide\apiBuilder.js tmp\slide.js
 
 REM delete anonymous functions
-ruby reformat_script_win.rb
+node reformat_script.js
 
 REM generate docs
 node node_modules\jsdoc\jsdoc.js tmp\word.js  -t .

@@ -9,7 +9,7 @@ cp cell.js tmp/cell.js
 cp slide.js tmp/slide.js
 
 # delete anonymous function. It need because in other way jsdoc will not work correctly
-ruby reformat_script.rb
+node reformat_script.js
 
 # generating documentations and move it to new directory
 node_modules/jsdoc/jsdoc.js tmp/word.js  -t .
