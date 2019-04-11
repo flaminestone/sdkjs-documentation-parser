@@ -1,26 +1,47 @@
 #!/usr/bin/env
-# clearing folders
-rm -rf out/*
-rm -rf tmp/*
 
-# copy files. It need because in different way host apiBuilder files will be changes.
-cp word.js tmp/word.js
-cp cell.js tmp/cell.js
-cp slide.js tmp/slide.js
+# variables
+sdkjsPath=sdkjs
+outPath=jsdoc
+branch=master
+cloneRepo=false
+parseDocs=true
 
-# delete anonymous function. It need because in other way jsdoc will not work correctly
-node reformat_script.js
+if $cloneRepo
+then
+    # clear folder
+    rm -rf $sdkjsPath
 
-# generating documentations and move it to new directory
-node_modules/jsdoc/jsdoc.js tmp/word.js  -t .
-mkdir word && mv out/* word/
-node_modules/jsdoc/jsdoc.js tmp/cell.js  -t .
-mkdir cell && mv out/* cell/
-node_modules/jsdoc/jsdoc.js tmp/slide.js  -t .
-mkdir slide && mv out/* slide/
+    git clone -b $branch https://github.com/ONLYOFFICE/sdkjs.git $sdkjsPath
+fi
 
-# move all documentation for out dir
-mv word out/
-mv cell out/
-mv slide out/
+if $parseDocs
+then
+    # clear tmp & out folder
+    rm -rf tmp/*
+    rm -rf out/*
+    rm -rf $outPath
+    mkdir $outPath
 
+    # copy files
+    cp $sdkjsPath/word/apiBuilder.js tmp/word.js
+    cp $sdkjsPath/cell/apiBuilder.js tmp/cell.js
+    cp $sdkjsPath/slide/apiBuilder.js tmp/slide.js
+
+    # download dependencies
+    npm install
+
+    echo deleting anonymous functions
+    node reformat_script.js
+
+    echo generating docs
+    node node_modules/jsdoc/jsdoc.js tmp/word.js  -t .
+    mv out $outPath/word/
+    mkdir out
+    node node_modules/jsdoc/jsdoc.js tmp/cell.js  -t .
+    mv out $outPath/cell/
+    mkdir out
+    node node_modules/jsdoc/jsdoc.js tmp/slide.js  -t .
+    mv out $outPath/slide/
+    mkdir out
+fi
